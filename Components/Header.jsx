@@ -18,13 +18,6 @@ const Header = () => {
         <input type="email" placeholder="Enter your email" className="w-full py-2 px-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-full">Search</button>
       </form>
-
-    <nav className="flex items-center justify-center gap-8 mt-10">
-      <a href="/" className="text-gray-600 hover:text-gray-900">Home</a>
-      <a href="/blog" className="text-gray-600 hover:text-gray-900">Blog</a>
-      <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
-      <a href="/contact" className="text-gray-600 hover:text-gray-900">Contact</a>
-    </nav>
     
     </div>
 
