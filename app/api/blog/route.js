@@ -6,19 +6,33 @@ import blogModel from "@/lib/models/BlogModel";
 
 const { NextResponse } = require("next/server");
 
+// Connect to database only if not already connected
+let isConnected = false;
 const loadDB = async () => {
-    await connectDb();
+    if (!isConnected) {
+        try {
+            await connectDb();
+            isConnected = true;
+            console.log('Database connected successfully');
+        } catch (error) {
+            console.error('Database connection error:', error);
+        }
+    }
 }
 
-loadDB();
-
 export async function GET(request) {
-    const allblogs = request.find()
-    return NextResponse.json(allblogs)
+    await loadDB();
+    try {
+        const allblogs = await blogModel.find({});
+        return NextResponse.json({ success: true, data: allblogs });
+    } catch (error) {
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
 }
 
 
 export async function POST(request) {
+    await loadDB();
     const formData = await request.formData();
     const timestamp = Date.now();
 
