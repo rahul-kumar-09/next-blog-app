@@ -1,9 +1,27 @@
 import { blog_data } from '@/Assets/assets'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import BlogItem from './BlogItem'
+import axios from 'axios';
 
 const BlogList = () => {
     const [menu, setMenu] = useState("All");
+    const [blogs, setBlogs] = useState([]);
+
+    const fetchBlogs = async () => {
+        try {
+            const response = await axios.get('/api/blog')
+            if (response.data.success) {
+                setBlogs(response.data.data)
+                console.log('Fetched blogs:', response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching blogs:', error);
+        }
+    }
+
+    useEffect(()=> {
+        fetchBlogs();
+    },[])
 
   return (
     <div>
@@ -15,9 +33,9 @@ const BlogList = () => {
         </div>
 
         <div className='flex flex-wrap justify-around gap-1 gap-y-10 mb-16 xl:mx-24'>
-            {blog_data.filter((item)=> menu === "All" ? true : item.category===menu)
+            {blogs.filter((item)=> menu === "All" ? true : item.category===menu)
             .map((item, index)=> {
-                return <BlogItem key={index} image={item.image} id={item.id} title={item.title} description={item.description} category={item.category} />
+                return <BlogItem key={index} image={item.image} id={item._id} title={item.title} description={item.description} category={item.category} />
             })}
         </div>
     </div>

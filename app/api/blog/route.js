@@ -23,12 +23,22 @@ const loadDB = async () => {
 // api endpoint to get blog
 export async function GET(request) {
     await loadDB();
-    try {
-        const allBlogs = await blogModel.find({});
-        return NextResponse.json({ success: true, data: allBlogs });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+
+    const blogId = request.nextUrl.searchParams.get("id")
+
+    if (blogId) {
+        const blog = await blogModel.findById(blogId);
+        return NextResponse.json(blog)
+    }else{
+        try {
+            const allBlogs = await blogModel.find({});
+            return NextResponse.json({ success: true, data: allBlogs });
+        } catch (error) {
+            return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        }
     }
+
+  
 }
 
 
