@@ -11,9 +11,10 @@ const Header = () => {
         </button>
     </div>
 
+
     <div className="text-center my-10">
       <h1 className="text-3xl font-bold sm:text-4xl "> Latest Blog </h1>
-      <p className="mt-10 max-w-[740px] mx-auto text-sm sm:text-base text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, rem optio ex, ipsum laudantium iste eaque laboriosam placeat expedita, voluptate praesentium ratione!</p>
+      <p className=" max-w-[740px] mx-auto text-sm sm:text-base text-gray-500 mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, rem optio ex, ipsum laudantium iste eaque laboriosam placeat expedita, voluptate praesentium ratione!</p>
       <form className="mt-10 flex items-center justify-center gap-2 max-w-[700px] mx-auto scale-75 sm:scale-100 m-auto">
         <input type="email" placeholder="Enter your email" className="w-full py-2 px-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-full">Search</button>
