@@ -20,43 +20,55 @@ const loadDB = async () => {
     }
 }
 
+// api endpoint to get blog
 export async function GET(request) {
     await loadDB();
     try {
-        const allblogs = await blogModel.find({});
-        return NextResponse.json({ success: true, data: allblogs });
+        const allBlogs = await blogModel.find({});
+        return NextResponse.json({ success: true, data: allBlogs });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
 
 
+// api endpoint uploading blog
 export async function POST(request) {
-    await loadDB();
-    const formData = await request.formData();
-    const timestamp = Date.now();
+    try {
+        await loadDB();
+        const formData = await request.formData();
+        const timestamp = Date.now();
 
-    const image = formData.get('image');
-    const imageByteData = await image.arrayBuffer();
-    const buffer = Buffer.from(imageByteData);
+        const image = formData.get('image');
+        if (!image) {
+            return NextResponse.json({ success: false, msg: "Image is required" }, { status: 400 });
+        }
 
-    const path = `./public/${timestamp}_${image.name}`
-    await writeFile(path, buffer);
-    const imgUrl = `/${timestamp}_${image.name}`
+        const imageByteData = await image.arrayBuffer();
+        const buffer = Buffer.from(imageByteData);
 
-    const blogData = {
-        title: `${formData.get('title')}`,
-        description: `${formData.get('description')}`,
-        category: `${formData.get('category')}`,
-        author: `${formData.get('author')}`,
-        image: `${imgUrl}`,
-        authorImg: `${formData.get('authorImg')}`,
+        const path = `./public/${timestamp}_${image.name}`
+        await writeFile(path, buffer);
+        const imgUrl = `/${timestamp}_${image.name}`
+
+        const blogData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            author: formData.get('author'),
+            image: imgUrl,
+            authorImg: formData.get('authorImg'),
+        }
+
+        await blogModel.create(blogData); 
+        console.log("Blog saved");
+        
+        return NextResponse.json({success: true, msg: "Blog added"})
+    } catch (error) {
+        console.error("Error saving blog:", error);
+        return NextResponse.json(
+            { success: false, msg: "Failed to save blog", error: error.message },
+            { status: 500 }
+        );
     }
-
-    await blogModel.create(blogData); 
-    console.log("Blog saved");
-    
-
-    return NextResponse.json({success: true, msg: "Blog added"})
-    
 }
