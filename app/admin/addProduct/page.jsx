@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 
 const page = () => {
     const [image, setImage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState({
         title: "",
         description: "",
@@ -25,27 +26,34 @@ const page = () => {
 
     const onSubmitHandler = async(e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('title', data.title)
-        formData.append('description', data.description)
-        formData.append('category', data.category)
-        formData.append('author', data.author)
-        formData.append('authorImg', data.authorImg)
-        formData.append('image', image)
+        setIsLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append('title', data.title)
+            formData.append('description', data.description)
+            formData.append('category', data.category)
+            formData.append('author', data.author)
+            formData.append('authorImg', data.authorImg)
+            formData.append('image', image)
 
-        const response = await axios.post('/api/blog', formData)
-        if(response.data.success){
-            toast.success(response.data.msg)
-            setImage(false)
-            setData({
-                title: "",
-                description: "",
-                category: "Startup",
-                author: "Alex Bennett",
-                authorImg: "/author_img.png"
-            })
-        }else{
-            toast.error("Error")
+            const response = await axios.post('/api/blog', formData)
+            if(response.data.success){
+                toast.success(response.data.msg)
+                setImage(false)
+                setData({
+                    title: "",
+                    description: "",
+                    category: "Startup",
+                    author: "Alex Bennett",
+                    authorImg: "/author_img.png"
+                })
+            }else{
+                toast.error("Error")
+            }
+        } catch (error) {
+            toast.error(error.message || "Failed to post blog")
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -68,14 +76,16 @@ const page = () => {
                 </textarea>
        
             <p className='text-xl mt-4'>Blog Category </p>
-            <select name="category" onChange={onChangeHandler} value={data.category} id="" className='w-40 mt-4 px-4 py-3 rounded-xl border border-gray-500'>
+            <select name="category" onChange={onChangeHandler} value={data.category} id="" className='cursor-pointer w-40 mt-4 px-4 py-3 rounded-xl border border-gray-500'>
                 <option value="Startup">Startup</option>
                 <option value="Technology">Technology</option>
                 <option value="Lifestyle">Lifestyle</option>
             </select>
 
             <br />
-            <button className='mt-8 w-40 rounded-xl h-12 bg-black text-white '>Post</button>
+            <button disabled={isLoading} className='mt-8 w-40 cursor-pointer rounded-xl h-12 bg-black hover:bg-gray-800 text-white disabled:bg-gray-500 disabled:cursor-not-allowed'>
+                {isLoading ? 'Posting...' : 'Post'}
+            </button>
         </form>
     </div>
 

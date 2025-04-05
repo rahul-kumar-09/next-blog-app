@@ -3,6 +3,8 @@ import { Connection } from "mongoose";
 import {writeFile} from "fs/promises"
 import { log } from "console";
 import blogModel from "@/lib/models/BlogModel";
+import BlogItem from "@/Components/BlogItem";
+const fs = require('fs');
 
 const { NextResponse } = require("next/server");
 
@@ -80,5 +82,52 @@ export async function POST(request) {
             { success: false, msg: "Failed to save blog", error: error.message },
             { status: 500 }
         );
+    }
+}
+
+
+//create api to endpoint delete
+export async function DELETE(request) {
+    try {
+        await loadDB();
+        const id = request.nextUrl.searchParams.get('id');
+        
+        if (!id) {
+            return NextResponse.json({ 
+                success: false, 
+                msg: "Blog ID is required" 
+            }, { status: 400 });
+        }
+
+        const blog = await blogModel.findById(id);
+        if (!blog) {
+            return NextResponse.json({ 
+                success: false, 
+                msg: "Blog not found" 
+            }, { status: 404 });
+        }
+
+        // Delete the image file if it exists
+        if (blog.image) {
+            try {
+                fs.unlinkSync(`./public${blog.image}`);
+            } catch (error) {
+                console.error('Error deleting image file:', error);
+                // Continue with blog deletion even if image deletion fails
+            }
+        }
+
+        await blogModel.findByIdAndDelete(id);
+        return NextResponse.json({
+            success: true,
+            msg: "Blog deleted successfully"
+        });
+    } catch (error) {
+        console.error('Error deleting blog:', error);
+        return NextResponse.json({ 
+            success: false, 
+            msg: "Failed to delete blog",
+            error: error.message 
+        }, { status: 500 });
     }
 }
