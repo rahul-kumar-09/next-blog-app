@@ -3,6 +3,7 @@ import Image from "next/image";
 import {assets} from "@/Assets/assets"
 import axios from "axios";
 import { toast } from "react-toastify";
+import Link from "next/link";
 
 const Header = () => {
 
@@ -23,7 +24,9 @@ const Header = () => {
   }
   return <div className="py-5 px-5 md:px-10 lg:px-20 xl:px-40">
     <div className="flex items-center justify-between">
+      <Link href='/'>
         <Image src={assets.logo} alt="logo" width={100} height={100} className="w-[130px] sm:w-auto" />
+      </Link>
         <button className="flex item-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-gray-300 rounded-full">
             get started <Image src={assets.arrow} alt="arrow" width={20} height={20} />
         </button>
