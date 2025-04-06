@@ -28,3 +28,36 @@ export async function POST(request) {
     await EmailModel.create(emailData);
     return NextResponse.json({success: true, msg: "Email Subscribed"})
 }
+
+export async function DELETE(request) {
+    try {
+        const id = request.nextUrl.searchParams.get('id');
+        
+        if (!id) {
+            return NextResponse.json({ 
+                success: false, 
+                msg: "Email ID is required" 
+            }, { status: 400 });
+        }
+
+        const email = await EmailModel.findById(id);
+        if (!email) {
+            return NextResponse.json({ 
+                success: false, 
+                msg: "Email subscription not found" 
+            }, { status: 404 });
+        }
+
+        await EmailModel.findByIdAndDelete(id);
+        return NextResponse.json({
+            success: true,
+            msg: "Email subscription deleted successfully"
+        });
+    } catch (error) {
+        return NextResponse.json({ 
+            success: false, 
+            msg: "Failed to delete email subscription",
+            error: error.message 
+        }, { status: 500 });
+    }
+}

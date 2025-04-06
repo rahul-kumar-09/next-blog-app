@@ -19,7 +19,10 @@ const BlogTableItem = ({authorImg, title, author, date, deleteBlogs, mongoId}) =
         </td>
 
         <td onClick={()=> deleteBlogs(mongoId)} className='px-6 py-4 cursor-pointer'>
-           x
+            <span className='"bg-red-500 bg-black px-3 py-2 font-semibold rounded hover:bg-red-600 transition-colors"'>
+                Delete
+            </span>
+           
         </td>
     </tr>
   )
