@@ -56,12 +56,10 @@ export async function POST(request) {
             return NextResponse.json({ success: false, msg: "Image is required" }, { status: 400 });
         }
 
+        // Convert image to base64 string
         const imageByteData = await image.arrayBuffer();
-        const buffer = Buffer.from(imageByteData);
-
-        const path = `./public/${timestamp}_${image.name}`
-        await writeFile(path, buffer);
-        const imgUrl = `/${timestamp}_${image.name}`
+        const base64Image = Buffer.from(imageByteData).toString('base64');
+        const imgUrl = `data:${image.type};base64,${base64Image}`;
 
         const blogData = {
             title: formData.get('title'),
